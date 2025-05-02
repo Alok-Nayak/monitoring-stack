@@ -1,0 +1,32 @@
+groups:
+  - name: app-request-alerts
+    rules:
+      - alert: HighRequestCount
+        expr: request_count > 10
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High request count"
+          description: "App has handled more than 10 requests in 30s"
+
+      - alert: RapidRequestSpike
+        expr: rate(request_count[15s]) > 5
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Rapid request spike"
+          description: "Request rate spiked above 5 req/15s in the last 30 seconds"
+
+  - name: infra-alerts
+    rules:
+      - alert: PrometheusDown
+        expr: up{job="prometheus"} == 0
+        for: 15s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Prometheus is down"
+          description: "The Prometheus server is not reachable (up == 0)"
+
